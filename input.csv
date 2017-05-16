@@ -1,0 +1,3 @@
+Device,Type,Implementation_Commands,Rollback_commands
+NKNAEG2A02-WifiTeam,Cisco,"int fa1/0/23desc Testing stuffswitchport mode access","int fa1/0/23no descno switchport mode access"
+NKNAEG2A02-JuniperTest,Juniper,"show interfaces me0.0delete forwarding-options dhcp-relay server-group ACCESS_POINT_DHCP_RELAY 1.1.1.1",rollback 1
