@@ -98,6 +98,13 @@ def main():
                            'password': password,
                            'secret': password
                            }
+        elif device_type[counter].lower() == 'cisco_asa':
+            device_dict = {'host': a_device,
+                           'device_type': 'cisco_asa',
+                           'username': username,
+                           'password': password,
+                           'secret': password
+                           }
         elif device_type[counter].lower() == 'juniper':
             device_dict = {'host': a_device,
                            'device_type': 'juniper',
