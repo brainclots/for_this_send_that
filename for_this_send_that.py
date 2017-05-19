@@ -98,9 +98,9 @@ def main():
                            'password': password,
                            'secret': password
                            }
-        elif device_type[counter].lower() == 'cisco_asa':
+        elif device_type[counter].lower() == 'cisco_ios_telnet':
             device_dict = {'host': a_device,
-                           'device_type': 'cisco_asa',
+                           'device_type': 'cisco_ios_telnet',
                            'username': username,
                            'password': password,
                            'secret': password
@@ -124,6 +124,7 @@ def main():
             else:
                 result = connection.send_config_set(implementation_cmds
                                                     [counter])
+                connection.send_config_set('commit confirm 30')
             logger.info('Actions: \n%s', result)
             if device_dict['device_type'] == 'cisco_ios':
                 connection.send_command('write mem')
