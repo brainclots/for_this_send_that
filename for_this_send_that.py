@@ -22,7 +22,7 @@ import argparse
 import netmiko
 import getpass
 import logging
-import csv
+import openpyxl
 
 # Set up argument parser and help info
 parser = argparse.ArgumentParser(
@@ -34,10 +34,11 @@ parser = argparse.ArgumentParser(
             | device1    | cisco    | commands to run     | rollback commands|
             | device2    | juniper  | commands to run     | rollback commands|
             |   etc...   | type     | commands to run     | rollback commands|
+        (OS_Type can be either "juniper", "cisco_ios", or "cisco_ios_telnet")
         ''')
 always_required = parser.add_argument_group('always required')
-always_required.add_argument("input_csv", nargs=1, help="Name of file containing \
-                             devices and command files for each device",
+always_required.add_argument("input_xlsx", nargs=1, help="Name of file containing \
+                             devices and commands for each device",
                              metavar='<import_file>')
 parser.add_argument('-r', '--rollback', help="Run rollback commands",
                     action="store_true")
@@ -54,23 +55,18 @@ logger.addHandler(handler)
 
 
 def open_file(file):
+    wb = openpyxl.load_workbook(file)
+    ws = wb.active
     devices = []
     device_type = []
     implementation_cmds = []
     rollback_cmds = []
-    with open(file, 'rbU') as f:
-        reader = csv.reader(f, dialect='excel')
-        counter = 0
-        for row in reader:
-            if counter >= 1:
-                if row[0]:
-                    devices.append(row[0])
-                    device_type.append(row[1])
-                    implementation_cmds.append(row[2])
-                    rollback_cmds.append(row[3])
-            counter += 1
-        f.close()
-        return devices, device_type, implementation_cmds, rollback_cmds
+    for row in range(2, ws.max_row):
+        devices.append(ws['A' + str(row)].value)
+        device_type.append(ws['B' + str(row)].value)
+        implementation_cmds.append(ws['C' + str(row)].value)
+        rollback_cmds.append(ws['D' + str(row)].value)
+    return devices, device_type, implementation_cmds, rollback_cmds
 
 
 def get_creds():  # Prompt for credentials
@@ -81,9 +77,9 @@ def get_creds():  # Prompt for credentials
 
 
 def main():
-    csvfile = args.input_csv[0]
+    input_file = args.input_xlsx[0]
     devices, device_type, implementation_cmds, rollback_cmds \
-        = open_file(csvfile)
+        = open_file(input_file)
     username, password = get_creds()
 
     netmiko_exceptions = (netmiko.ssh_exception.NetMikoTimeoutException,
@@ -91,27 +87,12 @@ def main():
 
     counter = 0
     for a_device in devices:
-        if device_type[counter].lower() == 'cisco':
-            device_dict = {'host': a_device,
-                           'device_type': 'cisco_ios',
-                           'username': username,
-                           'password': password,
-                           'secret': password
-                           }
-        elif device_type[counter].lower() == 'cisco_ios_telnet':
-            device_dict = {'host': a_device,
-                           'device_type': 'cisco_ios_telnet',
-                           'username': username,
-                           'password': password,
-                           'secret': password
-                           }
-        elif device_type[counter].lower() == 'juniper':
-            device_dict = {'host': a_device,
-                           'device_type': 'juniper',
-                           'username': username,
-                           'password': password,
-                           'secret': password
-                           }
+        device_dict = {'host': a_device,
+                       'device_type': device_type[counter],
+                       'username': username,
+                       'password': password,
+                       'secret': password
+                       }
         print('Connecting to ' + device_dict['host'] + ' (' +
               device_dict['device_type'] + ') ...')
         try:
@@ -124,12 +105,11 @@ def main():
             else:
                 result = connection.send_config_set(implementation_cmds
                                                     [counter])
-                connection.send_config_set('commit confirm 30')
             logger.info('Actions: \n%s', result)
-            if device_dict['device_type'] == 'cisco_ios':
-                connection.send_command('write mem')
-            elif device_dict['device_type'] == 'juniper':
-                connection.send_config_set('commit')
+            # if device_dict['device_type'] == 'cisco_ios':
+            #     connection.send_command('write mem')
+            # elif device_dict['device_type'] == 'juniper':
+            #     connection.send_config_set('commit')
             logger.info('Saved config changes on %s', device_dict['host'])
             connection.disconnect()
             counter += 1
