@@ -106,11 +106,13 @@ def main():
                 result = connection.send_config_set(implementation_cmds
                                                     [counter])
             logger.info('Actions: \n%s', result)
-            # if device_dict['device_type'] == 'cisco_ios':
-            #     connection.send_command('write mem')
-            # elif device_dict['device_type'] == 'juniper':
-            #     connection.send_config_set('commit')
+            print('Saving config changes...')
+            if device_dict['device_type'] in ['cisco_ios', 'cisco_ios_telnet']:
+                connection.send_command('write mem')
+            elif device_dict['device_type'] == 'juniper':
+                connection.send_config_set('commit')
             logger.info('Saved config changes on %s', device_dict['host'])
+            print('Disconnecting')
             connection.disconnect()
             counter += 1
 
