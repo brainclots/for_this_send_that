@@ -15,7 +15,7 @@ Author:
             |__] |  \ | |  | | \|    | \_ |___ |__|  |   /__
             Brian.Klotz@nike.com
 
-Version:    0.1
+Version:    0.5
 Date:       May 2017
 '''
 import argparse
@@ -29,7 +29,7 @@ parser = argparse.ArgumentParser(
     formatter_class=argparse.RawDescriptionHelpFormatter,
     description='''\
     Connect to list of devices and run a set of commands on each.
-    Format the csv file as follows:
+    Format the Excel file as follows:
             | DeviceName | OS_Type  | Implementation_Cmds |   Rollback_Cmds  |
             | device1    | cisco    | commands to run     | rollback commands|
             | device2    | juniper  | commands to run     | rollback commands|
