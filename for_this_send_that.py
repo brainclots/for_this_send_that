@@ -1,10 +1,10 @@
 #!/usr/bin/env python
 
 '''
-Purpose:    Connect to a list of devices, stored in column 1 in a csv file,
-            then run the commands contained in column 3. Column 4 should
-            contain rollback commands. These will be run only if the script is
-            envoked with the '-r' option.
+Purpose:    Connect to a list of devices, stored in column 1 in a spreadsheet,
+            then run the commands contained in column C. Column D should
+            contain rollback commands. The rollback commands will be run only
+            if the script is envoked with the '-r' option.
             | DeviceName | OS_Type  | Implementation_Cmds |   Rollback_Cmds  |
             | device1    | cisco    | commands to run     | rollback commands|
             | device2    | juniper  | commands to run     | rollback commands|
