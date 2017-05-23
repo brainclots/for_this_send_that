@@ -16,7 +16,7 @@ before saving the changes.
 
 See the example.xlsx file for examples of the spreadsheet.
 
-usage: for_this_send_that.py [-h] [-v] [-r] <import_file>
+    usage: for_this_send_that.py [-h] [-v] [-r] <import_file>
 
     Connect to list of devices and run a set of commands on each.
     Format the Excel file as follows:
@@ -35,11 +35,10 @@ usage: for_this_send_that.py [-h] [-v] [-r] <import_file>
     otherwise, changes are saved silently.
 
 
-optional arguments:
-  -h, --help      show this help message and exit
-  -v, --verify    Ask for verification before saving
-  -r, --rollback  Run rollback commands
+    optional arguments:
+      -h, --help      show this help message and exit
+      -v, --verify    Ask for verification before saving
+      -r, --rollback  Run rollback commands
 
-always required:
-  <import_file>   Name of file containing devices and commands for each device
-  
+    always required:
+      <import_file>   Name of file containing devices and commands for each device
