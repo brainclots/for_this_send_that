@@ -76,7 +76,7 @@ def main():
 
     # Build dictionary of devices
     for device_name in input_info.keys():
-        input_device = input_info[device_name]
+        input_device = input_info[device_name][device_name]
         device_dict = {'host': device_name,
                        'device_type': input_device['device_type'],
                        'username': username,
@@ -138,14 +138,14 @@ def open_file(file):
     input_info = {}
     for row in range(2, ws.max_row + 1):
         device = ws['A' + str(row)].value
-        input_info = {device:
-                      {'host': device,
-                       'device_type': ws['B' + str(row)].value,
-                       'implementation_cmds': ws['C' + str(row)].value,
-                       'rollback_cmds': ws['D' + str(row)].value,
-                       'verification_cmds': ws['E' + str(row)].value
-                       }
-                      }
+        input_info[device] = {device:
+                              {'host': device,
+                               'device_type': ws['B' + str(row)].value,
+                               'implementation_cmds': ws['C' + str(row)].value,
+                               'rollback_cmds': ws['D' + str(row)].value,
+                               'verification_cmds': ws['E' + str(row)].value
+                               }
+                              }
     return input_info
 
 
