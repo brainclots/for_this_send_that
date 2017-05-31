@@ -33,7 +33,7 @@ parser = argparse.ArgumentParser(
         | Column A   | Column B |     Column C        |     Column D     |
         +------------+----------+---------------------+------------------+
     Row1| DeviceName | OS_Type  | Implementation_Cmds |   Rollback_Cmds  |
-    Row2| device1    | cisco    | commands to run     | rollback commands|
+    Row2| device1    | cisco_ios| commands to run     | rollback commands|
     Row3| device2    | juniper  | commands to run     | rollback commands|
     RowX|   etc...   | type     | commands to run     | rollback commands|
     (OS_Type can be either "juniper", "cisco_ios", or "cisco_ios_telnet")
