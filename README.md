@@ -23,7 +23,7 @@ See the example.xlsx file for examples of the spreadsheet.
         | Column A   | Column B |     Column C        |     Column D     |
         +------------+----------+---------------------+------------------+
     Row1| DeviceName | OS_Type  | Implementation_Cmds |   Rollback_Cmds  |
-    Row2| device1    | cisco    | commands to run     | rollback commands|
+    Row2| device1    | cisco_ios| commands to run     | rollback commands|
     Row3| device2    | juniper  | commands to run     | rollback commands|
     RowX|   etc...   | type     | commands to run     | rollback commands|
 
