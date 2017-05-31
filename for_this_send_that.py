@@ -6,7 +6,7 @@ Purpose:    Connect to a list of devices, stored in column 1 in a spreadsheet,
             contain rollback commands. The rollback commands will be run only
             if the script is envoked with the '-r' option.
             | DeviceName | OS_Type  | Implementation_Cmds |   Rollback_Cmds  |
-            | device1    | cisco    | commands to run     | rollback commands|
+            | device1    | cisco_ios| commands to run     | rollback commands|
             | device2    | juniper  | commands to run     | rollback commands|
             |   etc...   | type     | commands to run     | rollback commands|
 Author:
