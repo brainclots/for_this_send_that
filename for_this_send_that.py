@@ -15,8 +15,8 @@ Author:
             |__] |  \ | |  | | \|    | \_ |___ |__|  |   /__
             Brian.Klotz@nike.com
 
-Version:    0.8
-Date:       May 2017
+Version:    0.9
+Date:       June 2017
 '''
 import argparse
 import netmiko
@@ -75,10 +75,9 @@ def main():
                           netmiko.ssh_exception.NetMikoAuthenticationException)
 
     # Build dictionary of devices
-    for device_name in input_info.keys():
-        input_device = input_info[device_name][device_name]
-        device_dict = {'host': device_name,
-                       'device_type': input_device['device_type'],
+    for row in range(1, len(input_info) + 1):
+        device_dict = {'host': input_info[row]['host'],
+                       'device_type': input_info[row]['device_type'],
                        'username': username,
                        'password': password,
                        'secret': password
@@ -94,17 +93,17 @@ def main():
             if args.rollback:
                 print('Sending rollback commands...')
                 result = connection.send_config_set(
-                                    input_device['rollback_cmds'])
+                                    input_info[row]['rollback_cmds'])
             else:
                 print('Sending implementation commands...')
                 result = connection.send_config_set(
-                                    input_device['implementation_cmds'])
+                                    input_info[row]['implementation_cmds'])
             indented_lines = indentem(result)
             logger.info('Actions: \n%s', indented_lines)
 
             # Run 'show' commands, if present
-            if input_device['verification_cmds']:
-                verify_config(connection, input_device['verification_cmds'])
+            if input_info[row]['verification_cmds']:
+                verify_config(connection, input_info[row]['verification_cmds'])
 
             # Determine whether to save
             if args.verify:
@@ -138,22 +137,25 @@ def open_file(file):
     input_info = {}
     for row in range(2, ws.max_row + 1):
         device = ws['A' + str(row)].value
-        input_info[device] = {device:
-                              {'host': device,
+        # Subtract 1 from the row so that devices are numbered 1, 2, 3...
+        input_info[row - 1] = {'host': device,
                                'device_type': ws['B' + str(row)].value,
                                'implementation_cmds': ws['C' + str(row)].value,
                                'rollback_cmds': ws['D' + str(row)].value,
                                'verification_cmds': ws['E' + str(row)].value
                                }
-                              }
     return input_info
 
 
 def get_creds():  # Prompt for credentials
     username = getpass.getuser()
 #   username = raw_input('User ID: ')
-    password = getpass.getpass()
-    return username, password
+    try:
+        password = getpass.getpass()
+        return username, password
+    except KeyboardInterrupt:
+        print('\n')
+        exit()
 
 
 def verify_config(connection, commands):
