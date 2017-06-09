@@ -109,7 +109,6 @@ def main():
             if args.verify:
                 yes_or_no = ask_to_save()
                 if yes_or_no == 'y':
-                    print('Saving config changes...')
                     save_now(connection, device_dict['device_type'])
                     logger.info('Saved config changes on %s',
                                 device_dict['host'])
@@ -172,8 +171,9 @@ def ask_to_save():
 
 
 def save_now(connection, device_type):
+    # type: (object, object) -> object
     print('Saving config changes...')
-    if device_type in ['cisco_ios', 'cisco_ios_telnet']:
+    if device_type in ['cisco_ios', 'cisco_ios_telnet', 'cisco_asa']:
         connection.send_command('write mem')
     elif device_type == 'juniper':
         connection.send_config_set('commit')
