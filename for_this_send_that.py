@@ -171,7 +171,6 @@ def ask_to_save():
 
 
 def save_now(connection, device_type):
-    # type: (object, object) -> object
     print('Saving config changes...')
     if device_type in ['cisco_ios', 'cisco_ios_telnet', 'cisco_asa']:
         connection.send_command('write mem')
