@@ -15,7 +15,7 @@ Author:
             |__] |  \ | |  | | \|    | \_ |___ |__|  |   /__
             Brian.Klotz@nike.com
 
-Version:    0.99
+Version:    1.0
 Date:       June 2017
 '''
 import argparse
@@ -74,6 +74,9 @@ def main():
     netmiko_exceptions = (netmiko.ssh_exception.NetMikoTimeoutException,
                           netmiko.ssh_exception.NetMikoAuthenticationException)
 
+    logger.info('********* Starting run for %s devices **********',
+                len(input_info))
+
     # Build dictionary of devices
     for row in range(1, len(input_info) + 1):
         device_dict = {'host': input_info[row]['host'],
@@ -98,6 +101,7 @@ def main():
                 print('Sending implementation commands...')
                 result = connection.send_config_set(
                                     input_info[row]['implementation_cmds'])
+            print('Finished sending commands.')
             indented_lines = indentem(result)
             logger.info('Actions: \n%s', indented_lines)
 
@@ -129,6 +133,8 @@ def main():
             print('Failed to connect: %s' % e)
             logger.error('Failed to connect %s', e)
     print('Completed. See "output.log" for results.')
+    logger.info('********* End of run for %s devices **********',
+                len(input_info))
 
 
 def open_file(file):
@@ -160,12 +166,14 @@ def get_creds():  # Prompt for credentials
 
 def verify_config(connection, commands, hostname):
     proof = connection.send_command(commands)
+    print('Output from Verification commands:')
     print(proof)
     outfile = hostname + '.show'
     f = open(outfile, 'w')
     f.write(proof)
     f.close()
-    logger.info('Verifcation commands results: \n%s', proof)
+    indented_lines = indentem(proof)
+    logger.info('Verifcation commands results: \n%s', indented_lines)
     return
 
 
