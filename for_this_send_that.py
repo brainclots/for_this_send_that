@@ -15,7 +15,7 @@ Author:
             |__] |  \ | |  | | \|    | \_ |___ |__|  |   /__
             Brian.Klotz@nike.com
 
-Version:    0.9
+Version:    0.99
 Date:       June 2017
 '''
 import argparse
@@ -36,7 +36,7 @@ parser = argparse.ArgumentParser(
     Row2| device1    | cisco_ios| commands to run     | rollback commands|
     Row3| device2    | juniper  | commands to run     | rollback commands|
     RowX|   etc...   | type     | commands to run     | rollback commands|
-    (OS_Type can be either "juniper", "cisco_ios", or "cisco_ios_telnet")
+    (OS_Type can be either "juniper", "cisco_ios", "cisco_asa", or "cisco_ios_telnet")
     Optional: Include 'show' commands in Column E for on-screen
     verification of your implmentation commands (will be logged as well).
 
@@ -103,7 +103,8 @@ def main():
 
             # Run 'show' commands, if present
             if input_info[row]['verification_cmds']:
-                verify_config(connection, input_info[row]['verification_cmds'])
+                verify_config(connection, input_info[row]['verification_cmds'],
+                              input_info[row]['host'])
 
             # Determine whether to save
             if args.verify:
@@ -157,9 +158,13 @@ def get_creds():  # Prompt for credentials
         exit()
 
 
-def verify_config(connection, commands):
+def verify_config(connection, commands, hostname):
     proof = connection.send_command(commands)
     print(proof)
+    outfile = hostname + '.show'
+    f = open(outfile, 'w')
+    f.write(proof)
+    f.close()
     logger.info('Verifcation commands results: \n%s', proof)
     return
 
