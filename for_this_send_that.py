@@ -15,8 +15,8 @@ Author:
             |__] |  \ | |  | | \|    | \_ |___ |__|  |   /__
             Brian.Klotz@nike.com
 
-Version:    1.0
-Date:       June 2017
+Version:    1.1
+Date:       July 2017
 '''
 import argparse
 import netmiko
@@ -111,9 +111,9 @@ def main():
             logger.info('Actions: \n%s', indented_lines)
 
             # Run 'show' commands, if present
-            # if input_info[row]['verification_cmds']:
-            #     verify_config(connection, input_info[row]['verification_cmds'],
-            #                   input_info[row]['host'])
+            if input_info[row]['verification_cmds']:
+                verify_config(connection, input_info[row]['verification_cmds'],
+                              input_info[row]['host'])
 
             # Determine whether to save
             if args.verify:
@@ -171,14 +171,17 @@ def get_creds():  # Prompt for credentials
 
 def verify_config(connection, commands, hostname):
     proof = connection.send_command(commands)
-    print('Output from Verification commands:')
+    print('Output from Verification commands:'),
+    print("\"" + commands + "\"\n")
     print(proof)
     outfile = hostname + '.show'
     f = open(outfile, 'w')
+    f.write(commands)
     f.write(proof)
     f.close()
     indented_lines = indentem(proof)
-    logger.info('Verifcation commands results: \n%s', indented_lines)
+    logger.info('Verification commands: "%s" \n%s' %
+                (commands, indented_lines))
     return
 
 
@@ -191,7 +194,7 @@ def ask_to_save():
 def save_now(connection, device_type):
     print('Saving config changes...')
     if 'cisco' in device_type:
-        connection.commit()
+        connection.send_command("write mem")
     elif device_type == 'juniper':
         connection.commit(and_quit=True)
 
