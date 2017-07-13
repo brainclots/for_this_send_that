@@ -99,16 +99,21 @@ def main():
                                     input_info[row]['rollback_cmds'])
             else:
                 print('Sending implementation commands...')
-                result = connection.send_config_set(
-                                    input_info[row]['implementation_cmds'])
+                if 'cisco' in device_dict['device_type']:
+                    result = connection.send_config_set(
+                                        input_info[row]['implementation_cmds'])
+                elif 'juniper' in device_dict['device_type']:
+                    result = connection.send_config_set(
+                                        input_info[row]['implementation_cmds'],
+                                        exit_config_mode=False)
             print('Finished sending commands.')
             indented_lines = indentem(result)
             logger.info('Actions: \n%s', indented_lines)
 
             # Run 'show' commands, if present
-            if input_info[row]['verification_cmds']:
-                verify_config(connection, input_info[row]['verification_cmds'],
-                              input_info[row]['host'])
+            # if input_info[row]['verification_cmds']:
+            #     verify_config(connection, input_info[row]['verification_cmds'],
+            #                   input_info[row]['host'])
 
             # Determine whether to save
             if args.verify:
@@ -185,10 +190,10 @@ def ask_to_save():
 
 def save_now(connection, device_type):
     print('Saving config changes...')
-    if device_type in ['cisco_ios', 'cisco_ios_telnet', 'cisco_asa']:
-        connection.send_command('write mem')
+    if 'cisco' in device_type:
+        connection.commit()
     elif device_type == 'juniper':
-        connection.send_config_set('commit')
+        connection.commit(and_quit=True)
 
 
 def indentem(lines):
