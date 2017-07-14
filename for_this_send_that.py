@@ -172,11 +172,11 @@ def get_creds():  # Prompt for credentials
 def verify_config(connection, commands, hostname):
     proof = connection.send_command(commands)
     print('Output from Verification commands:'),
-    print("\"" + commands + "\"\n")
+    print('\"' + commands + '\"')
     print(proof)
     outfile = hostname + '.show'
     f = open(outfile, 'w')
-    f.write(commands)
+    f.write(hostname + '# ' + commands + '\n')
     f.write(proof)
     f.close()
     indented_lines = indentem(proof)
