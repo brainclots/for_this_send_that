@@ -147,14 +147,15 @@ def open_file(file):
     ws = wb.active
     input_info = {}
     for row in range(2, ws.max_row + 1):
-        device = ws['A' + str(row)].value
-        # Subtract 1 from the row so that devices are numbered 1, 2, 3...
-        input_info[row - 1] = {'host': device,
-                               'device_type': ws['B' + str(row)].value,
-                               'implementation_cmds': ws['C' + str(row)].value,
-                               'rollback_cmds': ws['D' + str(row)].value,
-                               'verification_cmds': ws['E' + str(row)].value
-                               }
+        if ws['A' + str(row)].value:  # Prevents adding blank lines
+            device = ws['A' + str(row)].value
+            # Subtract 1 from the row so that devices are numbered 1, 2, 3...
+            input_info[row - 1] = {'host': device,
+                                   'device_type': ws['B' + str(row)].value,
+                                   'implementation_cmds': ws['C' + str(row)].value,
+                                   'rollback_cmds': ws['D' + str(row)].value,
+                                   'verification_cmds': ws['E' + str(row)].value
+                                   }
     return input_info
 
 
@@ -174,11 +175,11 @@ def verify_config(connection, commands, hostname):
     print('Output from Verification commands:'),
     print('\"' + commands + '\"')
     print(proof)
-    outfile = hostname + '.show'
-    f = open(outfile, 'w')
-    f.write(hostname + '# ' + commands + '\n')
-    f.write(proof)
-    f.close()
+    # outfile = hostname + '.show'
+    # f = open(outfile, 'w')
+    # f.write(hostname + '# ' + commands + '\n')
+    # f.write(proof)
+    # f.close()
     indented_lines = indentem(proof)
     logger.info('Verification commands: "%s" \n%s' %
                 (commands, indented_lines))
