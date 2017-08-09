@@ -38,7 +38,7 @@ parser = argparse.ArgumentParser(
     RowX|   etc...   | type     | commands to run     | rollback commands|
     (OS_Type can be either "juniper", "cisco_ios", "cisco_asa", or "cisco_ios_telnet")
     Optional: Include 'show' commands in Column E for on-screen
-    verification of your implmentation commands (will be logged as well).
+    verification of your implementation commands (will be logged as well).
 
     Note: If the '-v' switch is given, you will be prompted to save changes,
     otherwise, changes are saved silently.
@@ -78,7 +78,7 @@ def main():
                 len(input_info))
 
     # Build dictionary of devices
-    for row in range(1, len(input_info) + 1):
+    for i, row in enumerate(input_info, 1):
         device_dict = {'host': input_info[row]['host'],
                        'device_type': input_info[row]['device_type'],
                        'username': username,
