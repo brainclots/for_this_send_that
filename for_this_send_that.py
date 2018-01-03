@@ -52,6 +52,9 @@ parser.add_argument('-v', '--verify',
                     action="store_true")
 parser.add_argument('-r', '--rollback', help="Run rollback commands",
                     action="store_true")
+parser.add_argument('-d', '--dryrun',
+                    help="Only run verification commands, no save",
+                    action="store_true")
 
 args = parser.parse_args()
 
@@ -92,42 +95,48 @@ def main():
             logger.info('Successfully connected to %s', device_dict['host'])
             connection.enable()
 
-            # Send commands
-            if args.rollback:
-                print('Sending rollback commands...')
-                result = connection.send_config_set(
-                                    input_info[row]['rollback_cmds'])
-            else:
-                print('Sending implementation commands...')
-                if 'cisco' in device_dict['device_type']:
-                    result = connection.send_config_set(
-                                        input_info[row]['implementation_cmds'])
-                elif 'juniper' in device_dict['device_type']:
-                    result = connection.send_config_set(
-                                        input_info[row]['implementation_cmds'],
-                                        exit_config_mode=False)
-            print('Finished sending commands.')
-            indented_lines = indentem(result)
-            logger.info('Actions: \n%s', indented_lines)
-
-            # Run 'show' commands, if present
-            if input_info[row]['verification_cmds']:
+            # Is this a dry run?
+            if args.dryrun:
+                print('Sending verification commands...')
                 verify_config(connection, input_info[row]['verification_cmds'],
                               input_info[row]['host'])
-
-            # Determine whether to save
-            if args.verify:
-                yes_or_no = ask_to_save()
-                if yes_or_no == 'y':
-                    save_now(connection, device_dict['device_type'])
-                    logger.info('Saved config changes on %s',
-                                device_dict['host'])
-                else:
-                    print('Changes NOT saved!')
-                    logger.info('Changes NOT saved, roll back or reboot')
             else:
-                save_now(connection, device_dict['device_type'])
-                logger.info('Saved changes on %s' % device_dict['host'])
+                # Send commands
+                if args.rollback:
+                    print('Sending rollback commands...')
+                    result = connection.send_config_set(
+                                        input_info[row]['rollback_cmds'])
+                else:
+                    print('Sending implementation commands...')
+                    if 'cisco' in device_dict['device_type']:
+                        result = connection.send_config_set(
+                                            input_info[row]['implementation_cmds'])
+                    elif 'juniper' in device_dict['device_type']:
+                        result = connection.send_config_set(
+                                            input_info[row]['implementation_cmds'],
+                                            exit_config_mode=False)
+                print('Finished sending commands.')
+                indented_lines = indentem(result)
+                logger.info('Actions: \n%s', indented_lines)
+
+                # Run 'show' commands, if present
+                if input_info[row]['verification_cmds']:
+                    verify_config(connection, input_info[row]['verification_cmds'],
+                                  input_info[row]['host'])
+
+                # Determine whether to save
+                if args.verify:
+                    yes_or_no = ask_to_save()
+                    if yes_or_no == 'y':
+                        save_now(connection, device_dict['device_type'])
+                        logger.info('Saved config changes on %s',
+                                    device_dict['host'])
+                    else:
+                        print('Changes NOT saved!')
+                        logger.info('Changes NOT saved, roll back or reboot')
+                else:
+                    save_now(connection, device_dict['device_type'])
+                    logger.info('Saved changes on %s' % device_dict['host'])
 
             # Disconnect from device
             print('Disconnecting...')
