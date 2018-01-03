@@ -78,7 +78,7 @@ def main():
                 len(input_info))
 
     # Build dictionary of devices
-    for row in range(1, len(input_info) + 1):
+    for i, row in enumerate(input_info, 1):
         device_dict = {'host': input_info[row]['host'],
                        'device_type': input_info[row]['device_type'],
                        'username': username,
