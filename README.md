@@ -16,7 +16,7 @@ before saving the changes.
 
 See the example.xlsx file for examples of the spreadsheet.
 
-    usage: for_this_send_that.py [-h] [-v] [-r] <import_file>
+    usage: for_this_send_that.py [-h] [-v] [-r] [-d] <import_file>
 
     Connect to list of devices and run a set of commands on each.
     Format the Excel file as follows:
@@ -29,7 +29,7 @@ See the example.xlsx file for examples of the spreadsheet.
 
     (OS_Type can be either "juniper", "cisco_ios", or "cisco_ios_telnet")
     Optional: Include 'show' commands in Column E for on-screen
-    verification of your implmentation commands (will be logged as well).
+    verification of your implementation commands (will be logged as well).
 
     Note: If the '-v' switch is given, you will be prompted to save changes,
     otherwise, changes are saved silently.
@@ -39,6 +39,7 @@ See the example.xlsx file for examples of the spreadsheet.
       -h, --help      show this help message and exit
       -v, --verify    Ask for verification before saving
       -r, --rollback  Run rollback commands
+      -d, --dryrun    Only run verification commands, no save
 
     always required:
       <import_file>   Name of file containing devices and commands for each device
