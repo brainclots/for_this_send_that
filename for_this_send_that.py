@@ -15,8 +15,8 @@ Author:
             |__] |  \ | |  | | \|    | \_ |___ |__|  |   /__
             Brian.Klotz@nike.com
 
-Version:    1.1
-Date:       July 2017
+Version:    2.0
+Date:       January 2018
 '''
 import argparse
 import netmiko
