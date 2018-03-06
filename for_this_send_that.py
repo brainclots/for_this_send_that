@@ -86,7 +86,8 @@ def main():
                        'device_type': input_info[row]['device_type'],
                        'username': username,
                        'password': password,
-                       'secret': password
+                       'secret': password,
+                       #'global_delay_factor': 3,
                        }
         print('Connecting to ' + device_dict['host'] + ' (' +
               device_dict['device_type'] + ') ...')
@@ -146,6 +147,11 @@ def main():
         except netmiko_exceptions as e:
             print('Failed to connect: %s' % e)
             logger.error('Failed to connect %s', e)
+            if "Authentication failed" in str(e):
+                print("Unable to log in. Verify valid password or check "
+                      "TACACS on the device.")
+                return
+
     print('Completed. See "output.log" for results.')
     logger.info('********* End of run for %s devices **********',
                 len(input_info))
