@@ -13,7 +13,7 @@ Author:
             ___  ____ _ ____ _  _    _  _ _    ____ ___ ___
             |__] |__/ | |__| |\ |    |_/  |    |  |  |    /
             |__] |  \ | |  | | \|    | \_ |___ |__|  |   /__
-            Brian.Klotz@nike.com
+            Brian.Klotz@outlook.com
 
 Version:    2.0
 Date:       January 2018
